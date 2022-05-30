@@ -646,7 +646,7 @@ impl HashTable {
 
         if new_logical_offset % (SECTOR_SIZE - VALUE_SIZE) == 0 {
             // The page that was holding the value being moved is now free
-            let (&sector_logical_offset, sector_physical_offset) = self
+            let (&sector_logical_offset, &sector_physical_offset) = self
                 .values_mapping
                 .range(..=logical_offset)
                 .next_back()
@@ -656,7 +656,7 @@ impl HashTable {
                 new_logical_offset,
                 sector_logical_offset + SECTOR_SIZE - VALUE_SIZE
             );
-            self.free_sector(*sector_physical_offset - VALUE_SIZE);
+            self.free_sector(sector_physical_offset - VALUE_SIZE);
             self.values_mapping.remove(&sector_logical_offset);
         }
 
@@ -665,7 +665,7 @@ impl HashTable {
             == 0
         {
             // The page that was holding the delmap being moved is now free
-            let (sector_logical_offset, sector_physical_offset) = self
+            let (&sector_logical_offset, &sector_physical_offset) = self
                 .delmap_mapping
                 .range(..=logical_offset)
                 .next_back()
@@ -678,7 +678,7 @@ impl HashTable {
                         * DELS_PER_DELMAP
                         * VALUE_SIZE
             );
-            self.free_sector(*sector_physical_offset - FIRST_SLOT_OFFSET);
+            self.free_sector(sector_physical_offset - FIRST_SLOT_OFFSET);
         }
 
         ret
