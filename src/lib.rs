@@ -656,7 +656,8 @@ impl HashTable {
                 new_logical_offset,
                 sector_logical_offset + SECTOR_SIZE - VALUE_SIZE
             );
-            self.free_sector(*sector_physical_offset - VALUE_SIZE);
+            let offset = *sector_physical_offset - VALUE_SIZE;
+            self.free_sector(offset);
             self.values_mapping.remove(&sector_logical_offset);
         }
 
@@ -678,7 +679,8 @@ impl HashTable {
                         * DELS_PER_DELMAP
                         * VALUE_SIZE
             );
-            self.free_sector(*sector_physical_offset - FIRST_SLOT_OFFSET);
+            let offset = *sector_physical_offset - FIRST_SLOT_OFFSET;
+            self.free_sector(offset);
         }
 
         ret
