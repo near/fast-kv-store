@@ -41,7 +41,7 @@ fn rdb_benchmark_read() {
 }
 
 #[test]
-fn ht_benchmark_write() {
+fn rdb_benchmark_write() {
     let tmp_dir = TempDir::new("example").unwrap();
     let db = DB::open_default(tmp_dir.path().join("db")).unwrap();
 
