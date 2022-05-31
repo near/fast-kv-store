@@ -39,7 +39,7 @@ fn ht_benchmark_read() {
         db.get(key.clone()).unwrap();
     }
     let duration = start.elapsed();
-    println!("ht read ns {}", duration.as_nanos() / num_iter);
+    println!("\nHashTable read {}ns", duration.as_nanos() / num_iter);
 }
 
 #[test]
@@ -78,7 +78,7 @@ fn ht_benchmark_write() {
     }
     let duration = start.elapsed();
     println!(
-        "ht first write ns {}",
+        "\nHashTable first write {}ns",
         duration.as_nanos() / num_elems as u128
     );
 
@@ -97,5 +97,8 @@ fn ht_benchmark_write() {
         db.set(key.clone(), value.clone());
     }
     let duration = start.elapsed();
-    println!("ht over write ns {}", duration.as_nanos() / num_iter);
+    println!(
+        "\nHashTable over write {}ns",
+        duration.as_nanos() / num_iter
+    );
 }

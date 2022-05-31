@@ -37,7 +37,7 @@ fn rdb_benchmark_read() {
         db.get(key.clone()).unwrap();
     }
     let duration = start.elapsed();
-    println!("rdb read ns {}", duration.as_nanos() / num_iter);
+    println!("\nRocksDB read {}ns", duration.as_nanos() / num_iter);
 }
 
 #[test]
@@ -75,7 +75,7 @@ fn rdb_benchmark_write() {
     }
     let duration = start.elapsed();
     println!(
-        "rdb first write ns {}",
+        "\nRocksDB first write {}ns",
         duration.as_nanos() / num_elems as u128
     );
 
@@ -94,5 +94,5 @@ fn rdb_benchmark_write() {
         db.put(key.clone(), value.clone()).unwrap();
     }
     let duration = start.elapsed();
-    println!("rdb over write ns {}", duration.as_nanos() / num_iter);
+    println!("\nRocksDB over write {}ns", duration.as_nanos() / num_iter);
 }
