@@ -6,13 +6,13 @@ use rand::Rng;
 use tempdir::TempDir;
 
 #[test]
-fn ht_read_benchmark() {
+fn ht_benchmark_read() {
     let tmp_dir = TempDir::new("example").unwrap();
     let salt = rand::thread_rng().gen::<[u8; 32]>();
     let mut db = HashTable::new(tmp_dir.path().join("db"), salt, None);
 
-    let num_elems = 10000;
-    let num_iter = 100000;
+    let num_elems = 10_000;
+    let num_iter = 1_000_000;
 
     let mut keys = vec![];
     let mut values = vec![];
@@ -42,5 +42,14 @@ fn ht_read_benchmark() {
         assert_eq!(value, &db.get(key.clone()).unwrap());
     }
     let duration = start.elapsed();
-    println!("read ns {}", duration.as_nanos() / num_iter);
+    println!("read validate ns {}", duration.as_nanos() / num_iter);
+
+    let start = Instant::now();
+    for _ in 0..num_iter {
+        let index = indexes.choose(&mut rand::thread_rng()).unwrap().clone();
+        let key = &keys[index];
+        db.get(key.clone()).unwrap();
+    }
+    let duration = start.elapsed();
+    println!("read non-validate ns {}", duration.as_nanos() / num_iter);
 }
