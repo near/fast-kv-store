@@ -15,10 +15,19 @@ fn genenrate_data(
 ) -> (Vec<(Vec<u8>, Vec<u8>)>, usize) {
     let mut data = vec![];
     let mut total_size = 0;
+    let mut keys_duplicated = 0;
     for _ in 0..num_elems {
         let key: Vec<u8> = (0..rand::thread_rng().gen_range(6..8))
             .map(|_| rand::thread_rng().gen())
             .collect();
+        match default_rdb.get(key.clone()).unwrap() {
+            None => (),
+            Some(old_val) => {
+                keys_duplicated += 1;
+                total_size -= key.len();
+                total_size -= old_val.len();
+            }
+        }
         total_size += key.len();
         let value: Vec<u8> = (0..rand::thread_rng().gen_range(0..1025))
             .map(|_| rand::thread_rng().gen())
@@ -32,6 +41,10 @@ fn genenrate_data(
         assert_eq!(value, hdb.get(key.clone()).unwrap());
         data.push((key, value));
     }
+    println!(
+        "Generated {} elements with {} duplicate keys",
+        num_elems, keys_duplicated
+    );
     (data, total_size)
 }
 
@@ -109,7 +122,7 @@ fn benchmark_read() {
     println!();
     println!("elems\tSize\tDefaultRDB\tSettingsRDB\thashtable");
     //for num_elems in [1_000, 10_000, 100_000, 1_000_000] {
-    for num_elems in [5_000_000] {
+    for num_elems in [1_000_000] {
         let exp_path = format!("{}/experiments", std::env::var("HOME").unwrap());
         let exp_dir = Path::new(&exp_path);
 
